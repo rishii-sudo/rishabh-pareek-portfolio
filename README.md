@@ -2,7 +2,6 @@
 
 Personal cybersecurity and software engineering portfolio built with **SvelteKit 2**, **Svelte 5**, **TypeScript**, **SCSS**, **GSAP**, and **Zod**, deployed for Vercel.
 
-Design inspiration: Tim Gesemann — https://github.com/timges/personal-homepage
 
 ## Stack
 
