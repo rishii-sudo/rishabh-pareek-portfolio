@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+	<rect width="400" height="180" fill="#f7f5f1" />
+	<rect x="24" y="24" width="352" height="132" rx="4" fill="#ffffff" stroke="#2f355c" stroke-opacity="0.18" />
+	<rect x="44" y="54" width="112" height="72" rx="2" fill="#e7472b" />
+	<text x="100" y="86" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="11" font-weight="700">RED TEAM</text>
+	<text x="100" y="104" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="10">Kali · Sliver C2</text>
+	<path d="M156 90h88" stroke="#2f355c" stroke-width="2" stroke-dasharray="5 3" />
+	<rect x="244" y="54" width="112" height="72" rx="2" fill="#2f355c" />
+	<text x="300" y="86" text-anchor="middle" fill="#ffffff" font-family="monospace" font-size="11" font-weight="700">BLUE TEAM</text>
+	<text x="300" y="104" text-anchor="middle" fill="#f6bd8f" font-family="monospace" font-size="10">Telemetry · PCAP</text>
+</svg>

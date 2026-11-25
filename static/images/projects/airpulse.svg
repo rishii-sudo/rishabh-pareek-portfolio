@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+	<rect width="400" height="180" fill="#f7f5f1" />
+	<rect x="24" y="24" width="352" height="132" rx="4" fill="#ffffff" stroke="#2f355c" stroke-opacity="0.18" />
+	<path d="M44 102 Q74 48 104 102 T164 102 T224 102 T284 102 T344 102" stroke="#2f355c" stroke-width="2.5" fill="none" />
+	<path d="M44 102 Q74 74 104 102 T164 102 T224 102 T284 102 T344 102" stroke="#e7472b" stroke-width="2" stroke-dasharray="4 4" fill="none" />
+	<rect x="44" y="38" width="132" height="22" rx="2" fill="#f6bd8f" />
+	<text x="110" y="53" text-anchor="middle" fill="#2f355c" font-family="monospace" font-size="10" font-weight="700">WI-FI CSI + LSTM</text>
+	<text x="352" y="142" text-anchor="end" fill="#666666" font-family="Inter, sans-serif" font-size="10">Experimental Research Prototype</text>
+</svg>

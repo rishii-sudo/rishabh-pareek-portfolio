@@ -1,0 +1,18 @@
+@use 'sass/main';
+
+:root {
+	letter-spacing: var(--letter-spacing-l);
+	scroll-behavior: smooth;
+}
+
+@font-face {
+	font-family: 'type-writer';
+	src: url('/fonts/type-writer.ttf') format('truetype');
+	font-display: swap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		scroll-behavior: auto;
+	}
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+	<rect width="400" height="180" fill="#f7f5f1" />
+	<rect x="24" y="24" width="352" height="132" rx="4" fill="#ffffff" stroke="#2f355c" stroke-opacity="0.18" />
+	<rect x="48" y="48" width="90" height="84" rx="2" fill="#f7f5f1" stroke="#2f355c" stroke-opacity="0.25" />
+	<text x="93" y="94" text-anchor="middle" fill="#2f355c" font-family="Inter, sans-serif" font-size="11" font-weight="600">PATIENT</text>
+	<path d="M138 90h32" stroke="#2f355c" stroke-width="2" />
+	<rect x="170" y="48" width="90" height="84" rx="2" fill="#2f355c" />
+	<text x="215" y="94" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="11" font-weight="600">REFERRAL</text>
+	<path d="M260 90h24" stroke="#e7472b" stroke-width="2" />
+	<rect x="284" y="48" width="72" height="84" rx="2" fill="#f6bd8f" />
+	<text x="320" y="94" text-anchor="middle" fill="#2f355c" font-family="Inter, sans-serif" font-size="11" font-weight="600">CARE</text>
+</svg>

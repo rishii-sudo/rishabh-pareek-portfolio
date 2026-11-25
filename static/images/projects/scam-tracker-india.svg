@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 180" fill="none">
+	<rect width="400" height="180" fill="#f7f5f1" />
+	<rect x="24" y="24" width="352" height="132" rx="4" fill="#ffffff" stroke="#2f355c" stroke-opacity="0.18" />
+	<path d="M40 50h320M40 90h320M40 130h320M110 34v112M200 34v112M290 34v112" stroke="#2f355c" stroke-opacity="0.08" />
+	<circle cx="152" cy="78" r="18" fill="#f6bd8f" fill-opacity="0.65" />
+	<circle cx="152" cy="78" r="6" fill="#e7472b" />
+	<circle cx="228" cy="108" r="14" fill="#f6bd8f" fill-opacity="0.65" />
+	<circle cx="228" cy="108" r="5" fill="#2f355c" />
+	<circle cx="272" cy="68" r="12" fill="#e7472b" fill-opacity="0.25" />
+	<circle cx="272" cy="68" r="5" fill="#e7472b" />
+	<rect x="44" y="118" width="120" height="24" rx="2" fill="#2f355c" />
+	<text x="104" y="134" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="10" font-weight="600">GEO THREAT MAP</text>
+</svg>
