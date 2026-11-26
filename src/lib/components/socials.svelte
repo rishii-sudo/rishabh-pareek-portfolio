@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { socialProfiles } from '$lib/data/profile';
+	import { sidebarSocials } from '$lib/data/profile';
 
 	interface Props {
 		showBackToTop?: boolean;
@@ -12,7 +12,7 @@
 <aside aria-label="Social links and quick navigation">
 	{#if showBackToTop}
 		<div class="back-to-top" in:slide out:slide>
-			<a href="#nav" aria-label="Jump back to top">
+			<a href="#nav" aria-label="Jump back to top" title="Back to top">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
 					<path d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z" />
 				</svg>
@@ -22,8 +22,14 @@
 	{/if}
 
 	<div class="socials">
-		{#each socialProfiles as item}
-			<a target="_blank" rel="noopener noreferrer" href={item.href} aria-label={item.label} title={item.label}>
+		{#each sidebarSocials as item (item.id)}
+			<a
+				href={item.href}
+				target={item.external ? '_blank' : undefined}
+				rel={item.external ? 'noopener noreferrer' : undefined}
+				aria-label={item.external ? `${item.label} (opens in new tab)` : item.label}
+				title={item.label}
+			>
 				{#if item.id === 'github'}
 					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
 						<path
@@ -42,10 +48,28 @@
 							d="M12 2L3.5 6.9v10.2L12 22l8.5-4.9V6.9L12 2zm0 2.3l6.1 3.5L12 11.3 5.9 7.8 12 4.3zM5.5 9.6l5.5 3.2v6.6l-5.5-3.2V9.6zm13 6.6L13 19.4v-6.6l5.5-3.2v6.6z"
 						/>
 					</svg>
-				{:else}
+				{:else if item.id === 'tryhackme'}
 					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
 						<path
 							d="M19.5 11.2a3.8 3.8 0 0 0-3.2-1.8 4.4 4.4 0 0 0-8.4-1.3A3.9 3.9 0 0 0 3 11.9 4.1 4.1 0 0 0 7.1 16h11.3a3.6 3.6 0 0 0 1.1-4.8zM10.5 13.5H8v-2h2.5v2zm5.5 0h-3.5v-2H16v2z"
+						/>
+					</svg>
+				{:else if item.id === 'instagram'}
+					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+						<path
+							d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"
+						/>
+					</svg>
+				{:else if item.id === 'discord'}
+					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+						<path
+							d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.53 2.12 5.24 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.09-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.03.01.06.02.09.01 1.72-.53 3.45-1.33 5.25-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12z"
+						/>
+					</svg>
+				{:else}
+					<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+						<path
+							d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2m0 3.2V18h16V7.2l-8 5-8-5M4.8 6L12 10.5 19.2 6H4.8z"
 						/>
 					</svg>
 				{/if}
@@ -55,7 +79,6 @@
 </aside>
 
 <style lang="scss">
-
 	.socials {
 		display: flex;
 		flex-direction: column;
@@ -110,7 +133,8 @@
 			height: auto;
 			transition: transform 0.2s ease-in-out;
 
-			&:hover {
+			&:hover,
+			&:focus-visible {
 				transform: scale(1.05);
 				svg {
 					fill: var(--color-secondary);
@@ -131,9 +155,24 @@
 		align-items: center;
 		justify-content: center;
 
-		&:hover svg {
+		&:hover svg,
+		&:focus-visible svg {
 			transform: translateY(-2px) scale(1.1);
 			fill: var(--color-secondary);
+		}
+	}
+
+	@media screen and (max-height: 760px) {
+		.back-to-top {
+			top: 16%;
+		}
+
+		.socials {
+			gap: 12px;
+
+			&::after {
+				height: 44px;
+			}
 		}
 	}
 

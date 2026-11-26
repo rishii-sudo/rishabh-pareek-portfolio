@@ -91,6 +91,27 @@ test('skill bucket, certifications timeline, learning profiles, and contact form
 	await expect(page.getByRole('heading', { name: 'CERTIFICATIONS & TRAINING' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'SECURITY LEARNING PROFILES' })).toBeVisible();
 
+	// Verify all 5 confirmed contact methods with >=44px touch targets
+	const expectedContacts = [
+		{ href: 'mailto:fremindly@gmail.com', external: false },
+		{ href: 'https://www.instagram.com/48sh1xbh.p/', external: true },
+		{ href: 'https://discord.com/users/1106909470132551812', external: true },
+		{ href: 'https://www.linkedin.com/in/rishabhpareek-security/', external: true },
+		{ href: 'https://github.com/rishii-sudo', external: true }
+	];
+
+	for (const item of expectedContacts) {
+		const link = page.locator(`#contact-me .contact-methods a[href="${item.href}"]`);
+		await expect(link).toBeVisible();
+		const box = await link.boundingBox();
+		expect(box?.height).toBeGreaterThanOrEqual(44);
+		expect(box?.width).toBeGreaterThanOrEqual(44);
+		if (item.external) {
+			await expect(link).toHaveAttribute('target', '_blank');
+			await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+		}
+	}
+
 	// Contact form validation & mailto fallback replaces Send button with Open Email Client
 	await page.getByRole('button', { name: /Send/i }).click();
 	await expect(page.getByText('Uh-oh! This field cannot be left blank.').first()).toBeVisible();
@@ -102,6 +123,7 @@ test('skill bucket, certifications timeline, learning profiles, and contact form
 	await page.locator('#consent').check();
 	await page.getByRole('button', { name: /Send/i }).click();
 
+	await expect(page.getByText(/Direct server email is not configured here/i)).toBeVisible();
 	await expect(page.getByRole('link', { name: 'Open Email Client' })).toBeVisible();
 	await expect(page.getByRole('button', { name: /Send/i })).not.toBeVisible();
 });
@@ -206,6 +228,73 @@ test('modal focus trap, single-focusable behavior, scrollbar compensation, and p
 	await page.keyboard.press('Escape');
 	await expect(singleDialog).not.toBeVisible();
 	await expect(singleTrigger).toBeFocused();
+});
+
+test('fixed 7-link social sidebar has safe links, tooltips, and zero overlap with back-to-top at 1440x900, 1366x768, and 1280x720', async ({
+	page
+}) => {
+	const expectedSidebar = [
+		{ href: 'https://github.com/rishii-sudo', external: true },
+		{ href: 'https://www.linkedin.com/in/rishabhpareek-security/', external: true },
+		{
+			href: 'https://profile.hackthebox.com/profile/019cc396-c268-72b9-aa7d-1eff5f726cdb',
+			external: true
+		},
+		{ href: 'https://tryhackme.com/p/48sh1xbh', external: true },
+		{ href: 'https://www.instagram.com/48sh1xbh.p/', external: true },
+		{ href: 'https://discord.com/users/1106909470132551812', external: true },
+		{ href: 'mailto:fremindly@gmail.com', external: false }
+	];
+
+	for (const vp of [
+		{ width: 1440, height: 900 },
+		{ width: 1366, height: 768 },
+		{ width: 1280, height: 720 }
+	]) {
+		await page.setViewportSize(vp);
+		await page.goto('/');
+
+		const links = page.locator('aside[aria-label="Social links and quick navigation"] .socials a');
+		await expect(links).toHaveCount(7);
+
+		for (const item of expectedSidebar) {
+			const link = page.locator(
+				`aside[aria-label="Social links and quick navigation"] .socials a[href="${item.href}"]`
+			);
+			await expect(link).toBeVisible();
+			await expect(link).toHaveAttribute('title', /.+/);
+			await expect(link).toHaveAttribute('aria-label', /.+/);
+			if (item.external) {
+				await expect(link).toHaveAttribute('target', '_blank');
+				await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+			} else {
+				await expect(link).not.toHaveAttribute('target', '_blank');
+			}
+		}
+
+		// Scroll down so back-to-top appears and measure actual bounding boxes
+		await page.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' as ScrollBehavior }));
+		const backToTop = page.locator('aside .back-to-top');
+		await expect(backToTop).toBeVisible();
+
+		const backBox = await backToTop.boundingBox();
+		const socialsBox = await page.locator('aside .socials').boundingBox();
+		expect(backBox).not.toBeNull();
+		expect(socialsBox).not.toBeNull();
+		if (backBox && socialsBox) {
+			expect(backBox.y + backBox.height).toBeLessThan(socialsBox.y);
+		}
+	}
+
+	// Hidden on tablet (768px) and mobile (390px)
+	for (const vp of [
+		{ width: 768, height: 1024 },
+		{ width: 390, height: 844 }
+	]) {
+		await page.setViewportSize(vp);
+		await page.goto('/');
+		await expect(page.locator('aside[aria-label="Social links and quick navigation"]')).toBeHidden();
+	}
 });
 
 for (const vp of viewports.filter((v) => v.width <= 390 || v.width === 768 || v.width === 1440)) {
