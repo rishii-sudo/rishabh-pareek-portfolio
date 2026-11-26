@@ -35,7 +35,6 @@ export const actions: Actions = {
 			data: parsed.data,
 			recipientEmail: profile.email,
 			env: {
-				FORMSUBMIT_TARGET: env.FORMSUBMIT_TARGET,
 				SENDGRID_API_KEY: env.SENDGRID_API_KEY,
 				CONTACT_FROM_EMAIL: env.CONTACT_FROM_EMAIL,
 				CONTACT_TO_EMAIL: env.CONTACT_TO_EMAIL

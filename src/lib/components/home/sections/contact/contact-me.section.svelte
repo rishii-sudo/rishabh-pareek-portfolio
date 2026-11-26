@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import { contactMethods } from '$lib/data/profile';
+	import { env as publicEnv } from '$env/dynamic/public';
+	import { contactMethods, profile } from '$lib/data/profile';
 	import { contactFormSchema } from '$lib/util/contact-form-schema';
+	import { buildMailtoFallback, submitFormSubmitAjax } from '$lib/util/formsubmit-client';
 	import FormField from './form-field.svelte';
 
 	interface ActionResultData {
@@ -149,11 +151,69 @@
 		class="contact-form"
 		novalidate
 		use:enhance={({ cancel }) => {
+			if (isSubmitting) {
+				cancel();
+				return;
+			}
+
 			statusBanner = null;
+			// Note: Browser-side Zod validation and honeypot checks can be bypassed by automated clients.
+			// Independent server-side Zod validation remains active in +page.server.ts for non-JS submissions.
 			if (!validateClient()) {
 				cancel();
 				return;
 			}
+
+			const formSubmitTarget = publicEnv.PUBLIC_FORMSUBMIT_TARGET?.trim();
+			if (formSubmitTarget) {
+				cancel();
+				isSubmitting = true;
+
+				const currentValues = {
+					name,
+					email,
+					subject,
+					message,
+					consent: true as const,
+					website
+				};
+
+				void submitFormSubmitAjax({
+					target: formSubmitTarget,
+					data: currentValues
+				})
+					.then((result) => {
+						if (result.delivered) {
+							statusBanner = {
+								type: 'success',
+								text: result.message
+							};
+							name = '';
+							email = '';
+							subject = '';
+							message = '';
+							consent = false;
+							website = '';
+						} else {
+							statusBanner = {
+								type: 'fallback',
+								text: result.message,
+								mailtoUrl: buildMailtoFallback(
+									profile.email,
+									currentValues.name,
+									currentValues.email,
+									currentValues.subject,
+									currentValues.message
+								)
+							};
+						}
+					})
+					.finally(() => {
+						isSubmitting = false;
+					});
+				return;
+			}
+
 			isSubmitting = true;
 
 			return async ({ result, update }) => {

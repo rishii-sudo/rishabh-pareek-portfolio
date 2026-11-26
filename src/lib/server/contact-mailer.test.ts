@@ -5,92 +5,13 @@ const sampleData = {
 	name: 'Security Researcher',
 	email: 'researcher@example.com',
 	subject: 'Portfolio Inquiry',
-	message: 'Testing server-side FormSubmit delivery and fallback handling.',
+	message: 'Testing server-side fallback delivery and mailto handling.',
 	consent: true as const,
 	website: ''
 };
 
 describe('deliverContactMessage', () => {
-	it('returns delivered=true only when FormSubmit returns res.ok and valid success payload', async () => {
-		const fetchMock = vi.fn().mockResolvedValue(
-			new Response(JSON.stringify({ success: 'true', message: 'Form submitted' }), {
-				status: 200,
-				headers: { 'Content-Type': 'application/json' }
-			})
-		);
-
-		const result = await deliverContactMessage({
-			data: sampleData,
-			recipientEmail: 'fremindly@gmail.com',
-			env: { FORMSUBMIT_TARGET: 'hashed-formsubmit-token' },
-			fetchFn: fetchMock
-		});
-
-		expect(result.delivered).toBe(true);
-		expect(result.provider).toBe('formsubmit');
-		expect(fetchMock).toHaveBeenCalledTimes(1);
-
-		const [url, init] = fetchMock.mock.calls[0];
-		expect(url).toBe('https://formsubmit.co/ajax/hashed-formsubmit-token');
-		expect((init?.headers as Record<string, string>)['Origin']).toBeUndefined();
-		expect((init?.headers as Record<string, string>)['Referer']).toBeUndefined();
-	});
-
-	it('treats FormSubmit non-ok or success=false rejection as failure with mailtoFallback', async () => {
-		const fetchMock = vi.fn().mockResolvedValue(
-			new Response(JSON.stringify({ success: 'false', message: 'Form not activated' }), {
-				status: 200,
-				headers: { 'Content-Type': 'application/json' }
-			})
-		);
-
-		const result = await deliverContactMessage({
-			data: sampleData,
-			recipientEmail: 'fremindly@gmail.com',
-			env: { FORMSUBMIT_TARGET: 'hashed-formsubmit-token' },
-			fetchFn: fetchMock
-		});
-
-		expect(result.delivered).toBe(false);
-		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
-	});
-
-	it('handles FormSubmit timeout cleanly and returns mailtoFallback', async () => {
-		const fetchMock = vi.fn((_url, init) => {
-			return new Promise<Response>((_resolve, reject) => {
-				init?.signal?.addEventListener('abort', () => {
-					reject(new DOMException('The operation was aborted.', 'AbortError'));
-				});
-			});
-		});
-
-		const result = await deliverContactMessage({
-			data: sampleData,
-			recipientEmail: 'fremindly@gmail.com',
-			env: { FORMSUBMIT_TARGET: 'hashed-formsubmit-token' },
-			fetchFn: fetchMock as unknown as typeof fetch,
-			timeoutMs: 15
-		});
-
-		expect(result.delivered).toBe(false);
-		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
-	});
-
-	it('handles FormSubmit network failure and falls back to mailto', async () => {
-		const fetchMock = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
-
-		const result = await deliverContactMessage({
-			data: sampleData,
-			recipientEmail: 'fremindly@gmail.com',
-			env: { FORMSUBMIT_TARGET: 'hashed-formsubmit-token' },
-			fetchFn: fetchMock
-		});
-
-		expect(result.delivered).toBe(false);
-		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
-	});
-
-	it('returns mailtoFallback when neither FormSubmit nor SendGrid is configured', async () => {
+	it('returns mailtoFallback when SendGrid is not configured', async () => {
 		const fetchMock = vi.fn();
 
 		const result = await deliverContactMessage({
@@ -105,17 +26,13 @@ describe('deliverContactMessage', () => {
 		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
 	});
 
-	it('falls back to SendGrid during testing if FormSubmit fails and SendGrid is configured', async () => {
-		const fetchMock = vi
-			.fn()
-			.mockRejectedValueOnce(new Error('FormSubmit unreachable'))
-			.mockResolvedValueOnce(new Response(null, { status: 202 }));
+	it('delivers via SendGrid when configured and SendGrid returns 202', async () => {
+		const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 202 }));
 
 		const result = await deliverContactMessage({
 			data: sampleData,
 			recipientEmail: 'fremindly@gmail.com',
 			env: {
-				FORMSUBMIT_TARGET: 'hashed-formsubmit-token',
 				SENDGRID_API_KEY: 'SG.test-key',
 				CONTACT_FROM_EMAIL: 'verified@example.com'
 			},
@@ -124,6 +41,42 @@ describe('deliverContactMessage', () => {
 
 		expect(result.delivered).toBe(true);
 		expect(result.provider).toBe('sendgrid');
-		expect(fetchMock).toHaveBeenCalledTimes(2);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+	});
+
+	it('returns status 502 with mailtoFallback when SendGrid rejects the request', async () => {
+		const fetchMock = vi.fn().mockResolvedValue(new Response('Unauthorized', { status: 401 }));
+
+		const result = await deliverContactMessage({
+			data: sampleData,
+			recipientEmail: 'fremindly@gmail.com',
+			env: {
+				SENDGRID_API_KEY: 'SG.test-key',
+				CONTACT_FROM_EMAIL: 'verified@example.com'
+			},
+			fetchFn: fetchMock
+		});
+
+		expect(result.delivered).toBe(false);
+		expect(result.status).toBe(502);
+		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
+	});
+
+	it('returns status 500 with mailtoFallback when SendGrid throws a network error', async () => {
+		const fetchMock = vi.fn().mockRejectedValue(new TypeError('Network failure'));
+
+		const result = await deliverContactMessage({
+			data: sampleData,
+			recipientEmail: 'fremindly@gmail.com',
+			env: {
+				SENDGRID_API_KEY: 'SG.test-key',
+				CONTACT_FROM_EMAIL: 'verified@example.com'
+			},
+			fetchFn: fetchMock
+		});
+
+		expect(result.delivered).toBe(false);
+		expect(result.status).toBe(500);
+		expect(result.mailtoFallback).toContain('mailto:fremindly@gmail.com');
 	});
 });

@@ -128,6 +128,54 @@ test('skill bucket, certifications timeline, learning profiles, and contact form
 	await expect(page.getByRole('button', { name: /Send/i })).not.toBeVisible();
 });
 
+test('contact form enforces consent, honeypot, loading state, and duplicate submission prevention', async ({
+	page
+}) => {
+	await page.setViewportSize({ width: 1440, height: 900 });
+	await page.goto('/');
+
+	let postCount = 0;
+	await page.route('/', async (route) => {
+		if (route.request().method() === 'POST') {
+			postCount += 1;
+			await new Promise((resolve) => setTimeout(resolve, 250));
+			await route.continue();
+			return;
+		}
+		await route.continue();
+	});
+
+	await page.getByLabel('Name').fill('Security Researcher');
+	await page.getByLabel('Email address').fill('researcher@example.com');
+	await page.getByLabel('Subject').fill('Portfolio Inquiry');
+	await page.getByLabel('Message').fill('Testing consent, honeypot, and duplicate submission guard.');
+
+	// Missing privacy consent blocks submission
+	const sendButton = page.locator('#contact-me button[type="submit"]');
+	await sendButton.click();
+	await expect(
+		page.getByText('You must accept the privacy notice before submitting the form.')
+	).toBeVisible();
+	expect(postCount).toBe(0);
+
+	// Non-empty honeypot blocks submission
+	await page.locator('#consent').check();
+	await page.locator('#contact-website').fill('https://spam.example.com');
+	await sendButton.click();
+	expect(postCount).toBe(0);
+
+	// Clear honeypot and test loading state + duplicate click prevention
+	await page.locator('#contact-website').fill('');
+	await sendButton.click();
+	await expect(sendButton).toBeDisabled();
+	await expect(sendButton).toContainText('Sending...');
+
+	// Attempt duplicate click while request is in flight
+	await sendButton.click({ force: true });
+	await expect(page.getByRole('link', { name: 'Open Email Client' })).toBeVisible();
+	expect(postCount).toBe(1);
+});
+
 test('interactive project case study modal and security research log work', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 900 });
 	await page.goto('/');
