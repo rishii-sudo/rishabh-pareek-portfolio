@@ -231,25 +231,26 @@
 				role="status"
 			>
 				<p>{statusBanner.text}</p>
-				{#if statusBanner.mailtoUrl}
-					<a class="mailto-button" href={statusBanner.mailtoUrl}>Open Email Client</a>
-				{/if}
 			</div>
 		{/if}
 
 		<div class="submit-container">
-			<button type="submit" disabled={isSubmitting}>
-				{#if isSubmitting}
-					Sending...
-				{:else}
-					Send
-					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 495.003 495.003" aria-hidden="true">
-						<path
-							d="M164.711 456.687a8.007 8.007 0 0 0 4.266 7.072 7.992 7.992 0 0 0 8.245-.468l55.09-37.616-67.6-32.22v63.232zM492.431 32.443a8.024 8.024 0 0 0-5.44-2.125 7.89 7.89 0 0 0-3.5.816L7.905 264.422a14.154 14.154 0 0 0 .153 25.472L133.4 349.618l250.62-205.99-219.565 220.786 156.145 74.4a14.115 14.115 0 0 0 6.084 1.376c1.768 0 3.519-.322 5.186-.977a14.188 14.188 0 0 0 7.97-7.956l154.596-390a7.968 7.968 0 0 0-2.005-8.814z"
-						/>
-					</svg>
-				{/if}
-			</button>
+			{#if statusBanner?.type === 'fallback' && statusBanner.mailtoUrl}
+				<a class="mailto-button" href={statusBanner.mailtoUrl}>Open Email Client</a>
+			{:else}
+				<button type="submit" disabled={isSubmitting}>
+					{#if isSubmitting}
+						Sending...
+					{:else}
+						Send
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 495.003 495.003" aria-hidden="true">
+							<path
+								d="M164.711 456.687a8.007 8.007 0 0 0 4.266 7.072 7.992 7.992 0 0 0 8.245-.468l55.09-37.616-67.6-32.22v63.232zM492.431 32.443a8.024 8.024 0 0 0-5.44-2.125 7.89 7.89 0 0 0-3.5.816L7.905 264.422a14.154 14.154 0 0 0 .153 25.472L133.4 349.618l250.62-205.99-219.565 220.786 156.145 74.4a14.115 14.115 0 0 0 6.084 1.376c1.768 0 3.519-.322 5.186-.977a14.188 14.188 0 0 0 7.97-7.956l154.596-390a7.968 7.968 0 0 0-2.005-8.814z"
+							/>
+						</svg>
+					{/if}
+				</button>
+			{/if}
 		</div>
 	</form>
 </section>
@@ -356,13 +357,10 @@
 	}
 
 	.status-banner {
-		padding: var(--spacing-m);
+		padding: var(--spacing-s) var(--spacing-m);
 		border-radius: var(--border-radius-s);
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		line-height: var(--line-height-normal);
-		display: flex;
-		flex-direction: column;
-		gap: var(--spacing-s);
 
 		&.success {
 			background-color: color-mix(in srgb, var(--color-success) 12%, var(--color-bg-light));
@@ -371,7 +369,7 @@
 		}
 
 		&.fallback {
-			background-color: color-mix(in srgb, var(--color-chili-pepper) 35%, var(--color-bg-light));
+			background-color: color-mix(in srgb, var(--color-chili-pepper) 28%, var(--color-bg-light));
 			border-left: 3px solid var(--color-secondary);
 			color: var(--color-primary);
 		}
@@ -384,15 +382,22 @@
 	}
 
 	.mailto-button {
-		align-self: flex-start;
-		display: inline-block;
-		background-color: var(--color-secondary);
-		color: var(--color-text-on-secondary);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--color-primary);
+		color: var(--color-text-on-primary);
 		text-decoration: none;
-		padding: var(--spacing-s) var(--spacing-m);
+		padding: var(--spacing-m) var(--spacing-xl);
 		border-radius: var(--border-radius-s);
-		font-size: 0.85rem;
+		font-size: var(--font-size-b1);
 		font-weight: 600;
+		min-height: 44px;
+		transition: background-color 0.2s ease-in-out;
+
+		&:hover {
+			background-color: var(--color-primary-hover);
+		}
 	}
 
 	.submit-container {

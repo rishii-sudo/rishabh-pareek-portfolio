@@ -304,8 +304,34 @@
 			left: calc(-1 * var(--spacing-l) + 1px);
 		}
 
+		.issuer-list {
+			gap: var(--spacing-xxl);
+		}
+
+		.issuer-milestone {
+			padding-bottom: var(--spacing-xl);
+		}
+
+		.issuer-head h4 {
+			font-size: 1.35rem;
+		}
+
+		.issuer-sub {
+			font-size: 0.9rem;
+		}
+
 		.credential-items {
 			padding-left: 0;
+			gap: var(--spacing-m);
+		}
+
+		.cred-name {
+			font-size: 1rem;
+			line-height: 1.45;
+		}
+
+		.cred-kind {
+			font-size: 0.8rem;
 		}
 	}
 </style>

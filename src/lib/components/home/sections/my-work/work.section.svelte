@@ -1,30 +1,19 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import WorkItem from './work-item.svelte';
-	import { projects } from '$lib/data/projects';
-	import { getGsap, prefersReducedMotion } from '$lib/util/gsap';
+	import { onMount } from "svelte";
+	import WorkItem from "./work-item.svelte";
+	import ProjectModal from "./project-modal.svelte";
+	import { projects, type ProjectItem } from "$lib/data/projects";
+	import { createRevealAnimation } from "$lib/util/gsap";
 
 	let workSectionRef: HTMLElement | undefined = $state();
+	let selectedProject = $state<ProjectItem | null>(null);
 
 	onMount(() => {
-		if (!workSectionRef || prefersReducedMotion()) return;
-		const { gsap } = getGsap();
-		const ctx = gsap.context(() => {
-			gsap.from('.work-item', {
-				scrollTrigger: {
-					trigger: workSectionRef,
-					start: 'top 85%',
-					once: true
-				},
-				y: 16,
-				duration: 0.45,
-				stagger: 0.06,
-				ease: 'power2.out',
-				clearProps: 'transform'
-			});
-		}, workSectionRef);
-
-		return () => ctx.revert();
+		return createRevealAnimation(workSectionRef, ".work-item", {
+			y: 16,
+			duration: 0.45,
+			stagger: 0.06,
+		});
 	});
 </script>
 
@@ -33,14 +22,21 @@
 	<div class="work-grid">
 		{#each projects as item (item.id)}
 			<div class="work-item">
-				<WorkItem {item} />
+				<WorkItem
+					{item}
+					onSelect={(project) => (selectedProject = project)}
+				/>
 			</div>
 		{/each}
 	</div>
 </section>
 
-<style lang="scss">
+<ProjectModal
+	project={selectedProject}
+	onClose={() => (selectedProject = null)}
+/>
 
+<style lang="scss">
 	section {
 		max-width: 100%;
 		background-color: var(--color-bg-dark);

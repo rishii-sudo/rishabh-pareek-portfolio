@@ -14,6 +14,7 @@
 		{ label: 'Skills', href: '/#skills' },
 		{ label: 'My Work', href: '/#work' },
 		{ label: 'Experience', href: '/#experience' },
+		{ label: 'Research', href: '/#research-log' },
 		{ label: 'Contact', href: '/#contact-me' }
 	];
 

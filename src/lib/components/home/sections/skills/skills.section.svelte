@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { skillCategories } from "$lib/data/skills";
 	import { getGsap, prefersReducedMotion } from "$lib/util/gsap";
-	import SkillIcon from './skill-icon.svelte';
+	import SkillIcon from "./skill-icon.svelte";
 
 	let sectionRef: HTMLElement | undefined = $state();
 	let activeSkill = $state<string | null>(null);
@@ -10,8 +10,8 @@
 	const allSkills = skillCategories.flatMap((cat) =>
 		cat.skills.map((skill) => ({
 			name: skill,
-			category: cat.label
-		}))
+			category: cat.label,
+		})),
 	);
 
 	onMount(() => {
@@ -19,11 +19,11 @@
 
 		const { gsap, ScrollTrigger } = getGsap();
 		const ctx = gsap.context(() => {
-			gsap.from('.bucket-item', {
+			gsap.from(".bucket-item", {
 				scrollTrigger: {
 					trigger: sectionRef,
-					start: 'top 82%',
-					once: true
+					start: "top 82%",
+					once: true,
 				},
 				y: 12,
 				duration: 0.38,
@@ -43,8 +43,8 @@
 	<div class="section-header">
 		<h2>I'M GOOD AT THIS</h2>
 		<p class="bucket-caption">
-			Technical Arsenal — {allSkills.length} security tools, offensive methodologies, languages, and
-			platforms gathered in one place.
+			Technical Arsenal — {allSkills.length} security tools, offensive methodologies,
+			languages, and platforms gathered in one place.
 		</p>
 	</div>
 
@@ -63,14 +63,32 @@
 					stroke-width="2.5"
 					stroke-linecap="round"
 				/>
-				<circle cx="90" cy="66" r="5" fill="#ffffff" stroke="#2f355c" stroke-width="2" />
-				<circle cx="510" cy="66" r="5" fill="#ffffff" stroke="#2f355c" stroke-width="2" />
+				<circle
+					cx="90"
+					cy="66"
+					r="5"
+					fill="#ffffff"
+					stroke="#2f355c"
+					stroke-width="2"
+				/>
+				<circle
+					cx="510"
+					cy="66"
+					r="5"
+					fill="#ffffff"
+					stroke="#2f355c"
+					stroke-width="2"
+				/>
 			</svg>
 
 			<div class="bucket-rim" aria-hidden="true"></div>
 
 			<div class="bucket-body">
-				<div class="bucket-grid" role="list" aria-label="Technical skills and tools">
+				<div
+					class="bucket-grid"
+					role="list"
+					aria-label="Technical skills and tools"
+				>
 					{#each allSkills as item (item.name)}
 						<div class="bucket-item" role="listitem">
 							<button
@@ -82,7 +100,11 @@
 								onmouseleave={() => (activeSkill = null)}
 								onfocus={() => (activeSkill = item.name)}
 								onblur={() => (activeSkill = null)}
-								onclick={() => (activeSkill = activeSkill === item.name ? null : item.name)}
+								onclick={() =>
+									(activeSkill =
+										activeSkill === item.name
+											? null
+											: item.name)}
 							>
 								<span class="token-tooltip" aria-hidden="true">
 									{item.name}
@@ -225,7 +247,8 @@
 		width: 44px;
 		height: 44px;
 		background-color: var(--color-bg-light);
-		border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
+		border: 1px solid
+			color-mix(in srgb, var(--color-primary) 16%, transparent);
 		border-radius: var(--border-radius-m);
 	}
 
@@ -276,27 +299,45 @@
 
 	@media screen and (max-width: 768px) {
 		section {
-			padding: var(--spacing-xxl) var(--spacing-l);
+			padding: var(--spacing-xxl) var(--spacing-m);
 			display: flex;
 			flex-direction: column;
 		}
 
 		.bucket-body {
-			width: 96%;
-			padding: var(--spacing-l) var(--spacing-m) var(--spacing-xl);
-			border-bottom-left-radius: 24px;
-			border-bottom-right-radius: 24px;
+			width: 98%;
+			padding: var(--spacing-xl) var(--spacing-m) var(--spacing-xxl);
+			border-bottom-left-radius: 28px;
+			border-bottom-right-radius: 28px;
 		}
 
 		.bucket-grid {
 			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: var(--spacing-m) var(--spacing-xs);
+			gap: var(--spacing-l) var(--spacing-m);
+		}
+
+		.token-icon {
+			width: 56px;
+			height: 56px;
+
+			:global(svg) {
+				width: 34px;
+				height: 34px;
+			}
+		}
+
+		.token-label {
+			font-size: 0.85rem;
+			font-weight: 600;
+			color: var(--color-primary);
+			line-height: 1.3;
 		}
 	}
 
 	@media screen and (max-width: 440px) {
 		.bucket-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: var(--spacing-l) var(--spacing-m);
 		}
 
 		.token-tooltip {

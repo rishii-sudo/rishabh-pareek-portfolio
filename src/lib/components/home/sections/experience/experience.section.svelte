@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { timelineMilestones } from '$lib/data/experience';
-	import { getGsap, prefersReducedMotion } from '$lib/util/gsap';
-	import CertificationsSection from './certifications.section.svelte';
-	import LearningProfilesSection from './learning-profiles.section.svelte';
+	import { onMount } from "svelte";
+	import { timelineMilestones } from "$lib/data/experience";
+	import { getGsap, prefersReducedMotion } from "$lib/util/gsap";
+	import CertificationsSection from "./certifications.section.svelte";
+	import LearningProfilesSection from "./learning-profiles.section.svelte";
 
 	let expSectionRef: HTMLElement | undefined = $state();
 	let timelineGridRef: HTMLElement | undefined = $state();
@@ -28,11 +28,11 @@
 			const tl = gsap.timeline({
 				scrollTrigger: {
 					trigger: timelineGridRef,
-					start: 'top 82%',
-					end: 'bottom 70%',
+					start: "top 82%",
+					end: "bottom 70%",
 					scrub: 1,
-					invalidateOnRefresh: true
-				}
+					invalidateOnRefresh: true,
+				},
 			});
 
 			paths.forEach((path) => {
@@ -52,23 +52,23 @@
 			milestoneTimes.forEach((time, idx) => {
 				tl.fromTo(
 					`.milestone-dot-${idx}`,
-					{ scale: 0.72, transformOrigin: 'center center' },
-					{ scale: 1, duration: 0.35, ease: 'back.out(1.7)' },
-					time
+					{ scale: 0.72, transformOrigin: "center center" },
+					{ scale: 1, duration: 0.35, ease: "back.out(1.7)" },
+					time,
 				);
 
 				tl.fromTo(
 					`.milestone-year-${idx}`,
 					{ x: -8 },
-					{ x: 0, duration: 0.35, ease: 'power2.out' },
-					time + 0.04
+					{ x: 0, duration: 0.35, ease: "power2.out" },
+					time + 0.04,
 				);
 
 				tl.fromTo(
 					`.milestone-content-${idx}`,
 					{ y: 10 },
-					{ y: 0, duration: 0.4, ease: 'power2.out' },
-					time + 0.06
+					{ y: 0, duration: 0.4, ease: "power2.out" },
+					time + 0.06,
 				);
 			});
 		}, expSectionRef);
@@ -107,9 +107,33 @@
 						stroke-linecap="round"
 					/>
 
-					<line x1="205" y1="140" x2="280" y2="140" stroke="#2f355c" stroke-opacity="0.3" stroke-width="1" />
-					<line x1="105" y1="450" x2="280" y2="450" stroke="#2f355c" stroke-opacity="0.3" stroke-width="1" />
-					<line x1="205" y1="760" x2="280" y2="760" stroke="#2f355c" stroke-opacity="0.3" stroke-width="1" />
+					<line
+						x1="205"
+						y1="140"
+						x2="280"
+						y2="140"
+						stroke="#2f355c"
+						stroke-opacity="0.3"
+						stroke-width="1"
+					/>
+					<line
+						x1="105"
+						y1="450"
+						x2="280"
+						y2="450"
+						stroke="#2f355c"
+						stroke-opacity="0.3"
+						stroke-width="1"
+					/>
+					<line
+						x1="205"
+						y1="760"
+						x2="280"
+						y2="760"
+						stroke="#2f355c"
+						stroke-opacity="0.3"
+						stroke-width="1"
+					/>
 
 					<g class="milestone-dot-0">
 						<circle cx="195" cy="140" r="14" fill="#ffffff" />
@@ -330,13 +354,13 @@
 		section {
 			display: flex;
 			flex-direction: column;
-			padding: var(--spacing-xxl) var(--spacing-l);
+			padding: var(--spacing-xxl) var(--spacing-m);
 		}
 
 		.timeline-grid {
-			grid-template-columns: 44px minmax(0, 1fr);
+			grid-template-columns: 40px minmax(0, 1fr);
 			gap: var(--spacing-m);
-			min-height: 740px;
+			min-height: 820px;
 		}
 
 		.curve-column--desktop {
@@ -347,8 +371,37 @@
 			display: block;
 		}
 
+		.milestones-column {
+			gap: var(--spacing-xl);
+		}
+
+		.milestone-entry {
+			padding: var(--spacing-s) 0;
+		}
+
 		.mobile-year {
 			display: block;
+			font-size: 1.6rem;
+			margin-bottom: 4px;
+		}
+
+		.period {
+			font-size: 0.78rem;
+			margin-bottom: 6px;
+		}
+
+		.milestone-entry h3 {
+			font-size: 1.3rem;
+		}
+
+		.role {
+			font-size: 1rem;
+			margin-bottom: var(--spacing-s);
+		}
+
+		.milestone-entry ul li {
+			font-size: 0.98rem;
+			line-height: 1.6;
 		}
 	}
 </style>

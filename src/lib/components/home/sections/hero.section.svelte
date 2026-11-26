@@ -1,27 +1,29 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { profile, socialProfiles } from '$lib/data/profile';
-	import { getGsap, prefersReducedMotion } from '$lib/util/gsap';
+	import { onMount } from "svelte";
+	import { profile, socialProfiles } from "$lib/data/profile";
+	import { getGsap, prefersReducedMotion } from "$lib/util/gsap";
 
 	let heroRef: HTMLElement | undefined = $state();
 
-	const linkedin = socialProfiles.find((s) => s.id === 'linkedin')!;
-	const github = socialProfiles.find((s) => s.id === 'github')!;
+	const linkedin = socialProfiles.find((s) => s.id === "linkedin")!;
+	const github = socialProfiles.find((s) => s.id === "github")!;
 
 	function handleCtaClick() {
-		document.getElementById('contact-me')?.scrollIntoView({ behavior: 'smooth' });
+		document
+			.getElementById("contact-me")
+			?.scrollIntoView({ behavior: "smooth" });
 	}
 
 	onMount(() => {
 		if (!heroRef || prefersReducedMotion()) return;
 		const { gsap } = getGsap();
 		const ctx = gsap.context(() => {
-			gsap.from('.hero-animate', {
+			gsap.from(".hero-animate", {
 				y: 12,
 				duration: 0.45,
 				stagger: 0.06,
-				ease: 'power2.out',
-				clearProps: 'transform'
+				ease: "power2.out",
+				clearProps: "transform",
 			});
 		}, heroRef);
 
@@ -31,8 +33,12 @@
 
 <section class="hero" bind:this={heroRef}>
 	<div class="cta-container">
-		<p class="cta-greeting cta-greeting--hi hero-animate">{profile.greeting}</p>
-		<p class="cta-greeting cta-greeting--name-paragraph hero-animate">my name is</p>
+		<p class="cta-greeting cta-greeting--hi hero-animate">
+			{profile.greeting}
+		</p>
+		<p class="cta-greeting cta-greeting--name-paragraph hero-animate">
+			my name is
+		</p>
 		<h1 class="hero-animate">{profile.name}</h1>
 		<p class="cta-headline hero-animate">{profile.headline}</p>
 		<p class="cta-introduction hero-animate">
@@ -43,9 +49,15 @@
 				<span>GET IN TOUCH</span>
 			</button>
 			<div class="quick-links">
-				<a href={linkedin.href} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+				<a
+					href={linkedin.href}
+					target="_blank"
+					rel="noopener noreferrer">LinkedIn</a
+				>
 				<span aria-hidden="true">/</span>
-				<a href={github.href} target="_blank" rel="noopener noreferrer">GitHub</a>
+				<a href={github.href} target="_blank" rel="noopener noreferrer"
+					>GitHub</a
+				>
 			</div>
 		</div>
 	</div>
@@ -56,7 +68,6 @@
 </section>
 
 <style lang="scss">
-
 	.hero {
 		width: 100%;
 		min-height: calc(100vh - 96px);
@@ -139,7 +150,7 @@
 		overflow: hidden;
 
 		&::after {
-			content: '';
+			content: "";
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -177,7 +188,9 @@
 			text-decoration: none;
 			font-weight: 600;
 			border-bottom: 1px solid transparent;
-			transition: color 0.2s ease, border-color 0.2s ease;
+			transition:
+				color 0.2s ease,
+				border-color 0.2s ease;
 
 			&:hover {
 				color: var(--color-secondary);
